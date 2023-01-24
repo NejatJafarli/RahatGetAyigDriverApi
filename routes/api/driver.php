@@ -21,11 +21,16 @@ Route::group( ['prefix' => 'driver','middleware' => ['auth:driver-api','scopes:d
    // authenticated staff routes here 
     Route::get('logout',[LoginController::class, 'driverLogout']);
     Route::get('checktoken',[LoginController::class, 'checktoken']);
+    Route::post('getRides', [MainController::class, 'getRides'])->name('getRides');
 
     //create ride Ayig
-    Route::post('CheckUserAyigRide', [MainController::class, 'CheckUserAyigRide'])->name('CheckUserAyigRide');
+    Route::post('StartMovingAyigRide', [MainController::class, 'StartMovingAyigRide'])->name('StartMovingAyigRide');
+    Route::post('ArrivedToCustomerAyig', [MainController::class, 'ArrivedToCustomerAyig'])->name('ArrivedToCustomerAyig');
+    Route::post('StartAyigRide', [MainController::class, 'StartAyigRide'])->name('StartAyigRide');
+    Route::post('InfoDriverAyigRide', [MainController::class, 'InfoDriverAyigRide'])->name('InfoDriverAyigRide');
     Route::post('EndUserAyigRide', [MainController::class, 'EndUserAyigRide'])->name('EndUserAyigRide');
     Route::post('CreateRideAyig', [MainController::class, 'CreateRideAyig'])->name('CreateRideAyig');
+    Route::post('AcceptRideAyig', [MainController::class, 'AcceptRideAyig'])->name('AcceptRideAyig');
     
 
     //update user account

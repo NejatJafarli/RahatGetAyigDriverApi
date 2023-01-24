@@ -22,5 +22,8 @@ class rideAyigForUser extends Model
         'price',
         'userId',
         'AyigDriverId',
+        'OrderId',
+        'waitingStart',
+        'waitingEnd'
     ];
 }
