@@ -21,8 +21,14 @@ class CreateDriversTable extends Migration
             $table->string('password');
             $table->string('photo')->nullable();
             $table->string('email')->unique()->nullable();
-            $table->integer('status')->default(0);
+            $table->integer('status')->default(1); // if status = 1 then driver is active
+            //fin code
+            $table->string('fin_code')->nullable()->unique();
+            //want reservation works 
+            $table->integer('want_reservation')->default(0);
             $table->float('balance')->default(0);
+            //Driver license number
+            $table->string('license_number')->nullable()->unique();
             $table->timestamps();
         });
     }

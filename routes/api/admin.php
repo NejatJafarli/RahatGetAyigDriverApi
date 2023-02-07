@@ -13,7 +13,7 @@ use App\Http\Controllers\LoginController;
 |
 */
 
-Route::post('admin/login',[LoginController::class, 'adminLogin'])->name('adminLogin');
+Route::post('admin/login',[LoginController::class, 'adminLogin']);
 Route::group( ['prefix' => 'admin','middleware' => ['auth:admin-api','scopes:admin'] ],function(){
    // authenticated staff routes here 
 });
