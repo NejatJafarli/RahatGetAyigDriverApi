@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ayigRide;
+use App\Models\User;
 use App\Models\rideAyigForUser;
 use Illuminate\Http\Request;
 
@@ -110,11 +110,14 @@ class MainController extends Controller
                 'message' => 'Ride Already Completed'
             ];
         else {
-            if ($ride->status != 'Pending')
+            if($ride->status!='rezerv')
+            {
+                if ($ride->status != 'Pending')
                 return [
                     'status' => false,
                     'message' => 'Ride Not Pending'
                 ];
+            }
             $ride->status = 'Accepted';
             $ride->AyigDriverId = $req->user()->id;
             $ride->OrderId = $req->OrderId;
@@ -124,6 +127,45 @@ class MainController extends Controller
                 'message' => 'Ride Accepted'
             ];
         }
+    }
+    public function DriverIsOnline(Request $req){
+        $req->validate([
+            'IsOnline' => 'required'
+        ]);
+        $driver = $req->user();
+        $driver->online = $req->IsOnline;
+        $driver->save();
+        return [
+            'status' => true,
+            'message' => 'Driver is online or offline'
+        ];
+    }
+    public function getUserInfo(Request $req){
+        $req->validate([
+            'id' => 'required',
+        ]);
+        $user = User::find($req->id);
+        if (!$user)
+            return response()->json([
+                'status' => false,
+                'message' => 'this User is not exist',
+            ], 200);
+
+        $return=[];
+        $return['id']=$user->id;
+        $return['fullname']=$user->fullname;
+        $image = file_get_contents('https://user.rahatget.az/uploads/users/' . $user->photo);
+        $image = base64_encode($image);
+        $return['photo'] = 'data:image/jpeg;base64,'.$image;
+        $return['phone']=$user->phone;
+
+
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User found',
+            'data' => $return
+        ], 200);
     }
     public function ArrivedToCustomerAyig(Request $req)
     {

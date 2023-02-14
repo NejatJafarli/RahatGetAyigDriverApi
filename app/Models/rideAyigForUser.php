@@ -24,6 +24,9 @@ class rideAyigForUser extends Model
         'AyigDriverId',
         'OrderId',
         'waitingStart',
-        'waitingEnd'
+        'waitingEnd',
+        'payment_method',
+        'make',
+        'plate',
     ];
 }

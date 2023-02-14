@@ -38,6 +38,9 @@ class LoginController extends Controller
             config(['auth.guards.api.provider' => 'driver']);
 
             $user = Driver::find(auth()->guard('driver')->user()->id);
+        $image = file_get_contents('https://user.rahatget.az/uploads/drivers/' . $user->photo);
+        $image = base64_encode($image);
+        $user->photo = 'data:image/jpeg;base64,'.$image;
             $success['status'] =  true;
             $success['user'] =  $user;
             $success['token'] =  $user->createToken('MyApp', ['driver'])->accessToken;

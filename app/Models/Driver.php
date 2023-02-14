@@ -24,7 +24,11 @@ class Driver extends Authenticatable
         'photo',
         'email',
         'status',
-        'balance'
+        'balance',
+        'want_reservation',
+        'fin_code',
+        'license_number',
+        'online'
     ];
 
     protected $hidden = [

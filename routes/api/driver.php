@@ -32,7 +32,10 @@ Route::group( ['prefix' => 'driver','middleware' => ['auth:driver-api','scopes:d
     Route::post('CreateRideAyig', [MainController::class, 'CreateRideAyig'])->name('CreateRideAyig');
     Route::post('AcceptRideAyig', [MainController::class, 'AcceptRideAyig'])->name('AcceptRideAyig');
     
+    Route::post('DriverIsOnline', [MainController::class, 'DriverIsOnline'])->name('DriverIsOnline');
 
+    Route::post('getUserInfo', [MainController::class, 'getUserInfo'])->name('getUserInfo');
+    
     //update user account
     Route::post('updateAccount', [AccountController::class, 'updateAccount'])->name('updateAccount');
     //update user password

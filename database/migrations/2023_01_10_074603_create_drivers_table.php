@@ -29,10 +29,10 @@ class CreateDriversTable extends Migration
             $table->float('balance')->default(0);
             //Driver license number
             $table->string('license_number')->nullable()->unique();
+            $table->integer('online')->default(0);
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *
