@@ -14,18 +14,27 @@ class AccountController extends Controller
         $request->validate([
             'phone' => ' size:13 ',
             'photo' => 'max:2048',
-        ]);
+            'fullname' => 'required',
+        ],
+            [
+                'phone.size' => 'Phone_must_be_13_characters',
+                'fullname.required' => 'Fullname_is_required',
+                'photo.max' => 'Photo_size_must_be_less_than_2MB',
+            ]);
 
+            $data=$request->all();
         $user = $request->user();
-        $user->fullname = $request->fullname;
-        $user->phone = $request->phone;
-        if ($request->age == null) 
-            $user->age = null;
-        else
-            $user->age = $request->age;
+        $user->age=$data['age'];
         $user->save();
-
-        $oldPhoto=$request->user()->photo;
+        return response()->json([
+            'status' => true,
+            'message' => 'Account_updated_successfully',
+            'data' => $user,
+            "data2" => $data
+        ], 200);
+        $user->update($data);
+        $user->save();
+        $oldPhoto=$user->photo;
 
         if ($request->hasFile('photo')) {
            
@@ -55,7 +64,7 @@ class AccountController extends Controller
         $user->photo=base64_encode(file_get_contents("https://user.rahatget.az/uploads/drivers/".$user->photo));
         return response()->json([
             'status' => true,
-            'message' => 'Account updated successfully',
+            'message' => 'Account_updated_successfully',
             'data' => $user
         ], 200);
     }
@@ -67,14 +76,19 @@ class AccountController extends Controller
         $request->validate([
             'old_password' => 'required',
             'new_password' => 'required | min:6',
-        ]);
+        ],
+            [
+                'old_password.required' => 'Old_password_is_required',
+                'new_password.required' => 'New_password_is_required',
+                'new_password.min' => 'New_password_must_be_at_least_6_characters',
+            ]);
 
         $user = $request->user();
 
         if (!Hash::check($request->old_password, $user->password))
             return response()->json([
                 'status' => false,
-                'message' => 'Old password is wrong',
+                'message' => 'Old_password_is_wrong',
             ], 200);
 
         $user->password = Hash::make($request->new_password);
@@ -82,7 +96,7 @@ class AccountController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Password updated successfully',
+            'message' => 'Password_updated_successfully',
         ], 200);
     }
 }

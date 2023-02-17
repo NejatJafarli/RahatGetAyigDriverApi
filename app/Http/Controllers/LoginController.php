@@ -15,10 +15,6 @@ class LoginController extends Controller
 
         return response()->json($success, 200);
     }
-    public function hello(Request $request){
-        return response()->json(['status' => false, 'error' => 'Phone and Password are Wrong.'], 200);
-
-    }
 
     public function driverLogin(Request $request)
     {
@@ -28,8 +24,8 @@ class LoginController extends Controller
                 'password' => 'required',
             ],
             [
-                'phone.required' => 'Phone is required',
-                'password.required' => 'Password is required',
+                'phone.required' => 'Phone_is_required',
+                'password.required' => 'Password_is_required',
             ]
         );
 
@@ -47,7 +43,7 @@ class LoginController extends Controller
 
             return response()->json($success, 200);
         } else {
-            return response()->json(['status' => false, 'error' => 'Phone and Password are Wrong.'], 200);
+            return response()->json(['status' => false, 'error' => 'Phone_Or_Password_are_Wrong.'], 200);
         }
     }
     public function checktoken()
@@ -60,7 +56,7 @@ class LoginController extends Controller
     {
         $request->user()->token()->revoke();
         return response()->json([
-            'message' => 'Successfully logged out'
+            'message' => 'Successfully_logged_out'
         ]);
         // $request->user()->token()->revoke();
         // return response()->json([
@@ -72,7 +68,8 @@ class LoginController extends Controller
         $request->validate([
             'email' => 'required | email',
             'password' => 'required',
-        ]);
+        ]
+    );
 
         if (auth()->guard('admin')->attempt(['phone' => $request->phone, 'password' => $request->password])) {
 

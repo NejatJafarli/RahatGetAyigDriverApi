@@ -18,12 +18,12 @@ class MainController extends Controller
         if ($rides == null)
             return response()->json([
                 'status' => false,
-                'message' => 'Rides not found'
+                'message' => 'Rides_not_found'
             ]);
         else
             return response()->json([
                 'status' => true,
-                'message' => 'Rides found',
+                'message' => 'Rides_found',
                 'data' => $rides
             ]);
     }
@@ -31,30 +31,33 @@ class MainController extends Controller
     {
         $req->validate([
             'rideId' => 'required',
-        ]);
+        ],
+            [
+                'rideId.required' => 'RideId_is_required',
+            ]);
         //get rideAyigForUser for rideId
         $ride = rideAyigForUser::find($req->rideId);
         if ($ride == null)
             return [
                 'status' => false,
-                'message' => 'Ride not found'
+                'message' => 'Ride_not_found'
             ];
         if ($ride->status == 'Canceled')
             return [
                 'status' => false,
-                'message' => 'Ride Canceled'
+                'message' => 'Ride_Canceled'
             ];
         else {
             if ($ride->AyigDriverId != $req->user()->id)
                 return [
                     'status' => false,
-                    'message' => 'You are not the driver of this ride'
+                    'message' => 'You_are_not_the_driver_of_this_ride'
                 ];
             $ride->status = 'Completed';
             $ride->save();
             return [
                 'status' => true,
-                'message' => 'Ride finished'
+                'message' => 'Ride_finished'
             ];
         }
     }
@@ -63,18 +66,20 @@ class MainController extends Controller
     {
         $req->validate([
             'rideId' => 'required',
+        ],[
+            'rideId.required' => 'RideId_is_required',
         ]);
         //get rideAyigForUser for rideId
         $ride = rideAyigForUser::find($req->rideId);
         if ($ride == null)
             return [
                 'status' => false,
-                'message' => 'Ride not found'
+                'message' => 'Ride_not_found'
             ];
         else
             return [
                 'status' => true,
-                'message' => 'Ride found',
+                'message' => 'Ride_found',
                 'data' => $ride
             ];
     }
@@ -84,6 +89,9 @@ class MainController extends Controller
         $req->validate([
             'rideId' => 'required',
             'OrderId' => 'required'
+        ],[
+            'rideId.required' => 'RideId_is_required',
+            'OrderId.required' => 'OrderId_is_required'
         ]);
 
         $ride = rideAyigForUser::find($req->rideId);
@@ -91,23 +99,23 @@ class MainController extends Controller
         if ($ride == null)
             return [
                 'status' => false,
-                'message' => 'Ride not found'
+                'message' => 'Ride_not_found'
             ];
 
         if ($ride->status == 'Canceled')
             return [
                 'status' => false,
-                'message' => 'Ride Canceled'
+                'message' => 'Ride_Canceled'
             ];
         else if ($ride->status == 'Accepted')
             return [
                 'status' => false,
-                'message' => 'Ride Already Accepted'
+                'message' => 'Ride_Already_Accepted'
             ];
         else if ($ride->status == 'Completed')
             return [
                 'status' => false,
-                'message' => 'Ride Already Completed'
+                'message' => 'Ride_Already_Completed'
             ];
         else {
             if($ride->status!='rezerv')
@@ -115,7 +123,7 @@ class MainController extends Controller
                 if ($ride->status != 'Pending')
                 return [
                     'status' => false,
-                    'message' => 'Ride Not Pending'
+                    'message' => 'Ride_Not_Pending'
                 ];
             }
             $ride->status = 'Accepted';
@@ -124,20 +132,22 @@ class MainController extends Controller
             $ride->save();
             return [
                 'status' => true,
-                'message' => 'Ride Accepted'
+                'message' => 'Ride_Accepted'
             ];
         }
     }
     public function DriverIsOnline(Request $req){
         $req->validate([
             'IsOnline' => 'required'
+        ],[
+            'IsOnline.required' => 'IsOnline_is_required'
         ]);
         $driver = $req->user();
         $driver->online = $req->IsOnline;
         $driver->save();
         return [
             'status' => true,
-            'message' => 'Driver is online or offline'
+            'message' => 'Driver_is_online_or_offline'
         ];
     }
     public function getUserInfo(Request $req){
@@ -148,7 +158,7 @@ class MainController extends Controller
         if (!$user)
             return response()->json([
                 'status' => false,
-                'message' => 'this User is not exist',
+                'message' => 'this_User_is_not_exist',
             ], 200);
 
         $return=[];
@@ -159,11 +169,9 @@ class MainController extends Controller
         $return['photo'] = 'data:image/jpeg;base64,'.$image;
         $return['phone']=$user->phone;
 
-
-
         return response()->json([
             'status' => true,
-            'message' => 'User found',
+            'message' => 'User_found',
             'data' => $return
         ], 200);
     }
@@ -178,31 +186,32 @@ class MainController extends Controller
         if ($ride == null)
             return [
                 'status' => false,
-                'message' => 'Ride not found'
+                'message' => 'Ride_not_found'
             ];
 
         if ($ride->status == 'Canceled')
             return [
                 'status' => false,
-                'message' => 'Ride Canceled'
+                'message' => 'Ride_Canceled'
             ];
         else if ($ride->status == 'Completed')
             return [
                 'status' => false,
-                'message' => 'Ride Already Completed'
+                'message' => 'Ride_Already_Completed'
             ];
         else {
             if ($ride->status != 'Accepted')
                 return [
                     'status' => false,
-                    'message' => 'Ride Not Accepted'
+                    'message' => 'Ride_Not_Accepted'
                 ];
             $ride->status = 'Waiting Customer';
+            date_default_timezone_set('Asia/Baku');
             $ride->waitingStart = date('Y-m-d H:i:s');
             $ride->save();
             return [
                 'status' => true,
-                'message' => 'Ride Waiting Customer'
+                'message' => 'Ride_Waiting_Customer'
             ];
         }
     }
@@ -217,70 +226,32 @@ class MainController extends Controller
         if ($ride == null)
             return [
                 'status' => false,
-                'message' => 'Ride not found'
+                'message' => 'Ride_not_found'
             ];
 
         if ($ride->status == 'Canceled')
             return [
                 'status' => false,
-                'message' => 'Ride Canceled'
+                'message' => 'Ride_Canceled'
             ];
         else if ($ride->status == 'Completed')
             return [
                 'status' => false,
-                'message' => 'Ride Already Completed'
+                'message' => 'Ride_Already_Completed'
             ];
         else {
-            if ($ride->status != 'Waiting Customer')
+            if ($ride->status != 'Waiting_Customer')
                 return [
                     'status' => false,
-                    'message' => 'Ride Not Waiting Customer'
+                    'message' => 'Ride_Status_is_Not_Waiting_Customer'
                 ];
             $ride->status = 'Started';
+            date_default_timezone_set('Asia/Baku');
             $ride->waitingEnd = date('Y-m-d H:i:s');
             $ride->save();
             return [
                 'status' => true,
-                'message' => 'Ride Started'
-            ];
-        }
-    }
-    public function StartAyigRide(Request $req)
-    {
-        $req->validate([
-            'rideId' => 'required',
-        ]);
-
-        $ride = rideAyigForUser::find($req->rideId);
-
-        if ($ride == null)
-            return [
-                'status' => false,
-                'message' => 'Ride not found'
-            ];
-
-        if ($ride->status == 'Canceled')
-            return [
-                'status' => false,
-                'message' => 'Ride Canceled'
-            ];
-        else if ($ride->status == 'Completed')
-            return [
-                'status' => false,
-                'message' => 'Ride Already Completed'
-            ];
-        else {
-            if ($ride->status != 'Accepted')
-                return [
-                    'status' => false,
-                    'message' => 'Ride Not Accepted'
-                ];
-            $ride->status = 'Started';
-            $ride->waitingEnd = date('Y-m-d H:i:s');
-            $ride->save();
-            return [
-                'status' => true,
-                'message' => 'Ride Waiting Customer'
+                'message' => 'Ride_Started'
             ];
         }
     }
@@ -315,7 +286,7 @@ class MainController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Ride Created Successfully',
+            'message' => 'Ride_Created_Successfully',
             'rideId' => $rideUser->id
         ], 200);
     }
