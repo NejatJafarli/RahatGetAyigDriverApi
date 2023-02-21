@@ -28,5 +28,6 @@ class rideAyigForUser extends Model
         'payment_method',
         'make',
         'plate',
+        "IsRezerv"
     ];
 }

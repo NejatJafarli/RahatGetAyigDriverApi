@@ -13,54 +13,39 @@ class AccountController extends Controller
     {
         $request->validate([
             'phone' => ' size:13 ',
-            'photo' => 'max:2048',
+            'photo' => 'max:10240|image',
             'fullname' => 'required',
         ],
             [
                 'phone.size' => 'Phone_must_be_13_characters',
                 'fullname.required' => 'Fullname_is_required',
-                'photo.max' => 'Photo_size_must_be_less_than_2MB',
+                'photo.max' => 'Photo_size_must_be_less_than_10MB',
+            'photo.image' => 'Photo_must_be_image',
+
             ]);
 
-            $data=$request->all();
+            $base=base_path();
+            $BaseBackFolder=basename($base);
+            $base=str_replace($BaseBackFolder,"",$base);
+            $path=$base."user/public/uploads/drivers";
+
         $user = $request->user();
-        $user->age=$data['age'];
-        $user->save();
-        return response()->json([
-            'status' => true,
-            'message' => 'Account_updated_successfully',
-            'data' => $user,
-            "data2" => $data
-        ], 200);
-        $user->update($data);
+        $user->fullname = $request->fullname;
+        $user->phone = $request->phone;
+        $user->age = $request->age;
         $user->save();
         $oldPhoto=$user->photo;
-
         if ($request->hasFile('photo')) {
-           
             $photo = $request->file('photo');
-            //send PHOTO FILE TO https://user.rahatget.az/api/admin/drivers/MovePhotoDriver URL
-            $client = new \GuzzleHttp\Client();
-            $response = $client->request('POST', 'https://user.rahatget.az/api/MovePhotoDriver', [
-                'multipart' => [
-                    [
-                        'name'     => 'photo',
-                        'contents' => fopen($photo, 'r'),
-                        'filename' => $photo->getClientOriginalName()
-                    ],
-                    //driver id
-                    [
-                        'name'     => 'DriverId',
-                        'contents' => $user->id
-                    ],
-                ]
-            ]);
-
-            //get response from https://user.rahatget.az/api/admin/drivers/MovePhotoDriver
-            $response = json_decode($response->getBody()->getContents());
+            $photoName = time() . '.' . $photo->getClientOriginalExtension();
+            $photo->move($path, $photoName);
+            $user->photo = $photoName;
+            if($oldPhoto!='default.png' && $oldPhoto!=null){
+                unlink($path.'/'.$oldPhoto);
+            }
+            $user->save();
         } 
-        $user=Driver::find($user->id);
-        //MOVE TO rahatget/user/public/uploads/drivers
+        // $user=Driver::find($user->id);
         $user->photo=base64_encode(file_get_contents("https://user.rahatget.az/uploads/drivers/".$user->photo));
         return response()->json([
             'status' => true,

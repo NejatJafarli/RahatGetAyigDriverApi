@@ -31,9 +31,6 @@ class Driver extends Authenticatable
         'online'
     ];
 
-    //timestamps off
-    public $timestamps = false;
-
     protected $hidden = [
         'password',
         'remember_token',

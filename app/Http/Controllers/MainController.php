@@ -54,6 +54,12 @@ class MainController extends Controller
                     'message' => 'You_are_not_the_driver_of_this_ride'
                 ];
             $ride->status = 'Completed';
+            date_default_timezone_set('Asia/Baku');
+            $ride->endDate = date('Y-m-d H:i:s');
+
+            //calculate waiting price and add to price 
+
+
             $ride->save();
             return [
                 'status' => true,
@@ -240,7 +246,7 @@ class MainController extends Controller
                 'message' => 'Ride_Already_Completed'
             ];
         else {
-            if ($ride->status != 'Waiting_Customer')
+            if ($ride->status != 'Waiting Customer')
                 return [
                     'status' => false,
                     'message' => 'Ride_Status_is_Not_Waiting_Customer'
