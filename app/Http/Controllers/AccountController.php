@@ -12,12 +12,10 @@ class AccountController extends Controller
     public function updateAccount(Request $request)
     {
         $request->validate([
-            'phone' => ' size:13 ',
             'photo' => 'max:10240|image',
             'fullname' => 'required',
         ],
             [
-                'phone.size' => 'Phone_must_be_13_characters',
                 'fullname.required' => 'Fullname_is_required',
                 'photo.max' => 'Photo_size_must_be_less_than_10MB',
             'photo.image' => 'Photo_must_be_image',
@@ -31,13 +29,15 @@ class AccountController extends Controller
 
         $user = $request->user();
         $user->fullname = $request->fullname;
-        $user->phone = $request->phone;
         $user->age = $request->age;
         $user->save();
         $oldPhoto=$user->photo;
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $photoName = time() . '.' . $photo->getClientOriginalExtension();
+            if($photo->getClientOriginalExtension()=="")
+                $photoName.= ".jpg";
+            
             $photo->move($path, $photoName);
             $user->photo = $photoName;
             if($oldPhoto!='default.png' && $oldPhoto!=null){
